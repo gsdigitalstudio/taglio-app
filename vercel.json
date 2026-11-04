@@ -1,0 +1,1 @@
+{"crons":[{"path":"/api/cron","schedule":"0 4 * * *"}],"functions":{"api/*.js":{"maxDuration":300}}}
