@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="it"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Taglio"><meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f1ebdd"><title>Taglio</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Libre+Baskerville&family=Merriweather&family=Old+Standard+TT&family=Roboto+Slab&family=Lora&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1ebdd;--card:#f8f4ea;--ink:#211d18;--mute:#6b6254;--rule:#cfc4ac;--acc:#9a3a26;--mark:#f6d65a}
+@media(prefers-color-scheme:dark){:root{--bg:#17140f;--card:#201c16;--ink:#ece4d2;--mute:#a09783;--rule:#3a3429;--acc:#e0785a;--mark:#7a6416}}
+*{box-sizing:border-box;touch-action:manipulation;-webkit-text-size-adjust:100%}
+html,body{height:100%;margin:0;overscroll-behavior:none}
+body{background:var(--bg);color:var(--ink);font:17px/1.6 'Source Serif 4',Georgia,serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);display:flex;flex-direction:column}
+button,input,select{font:inherit;color:inherit}
+button{background:none;border:1px solid var(--rule);border-radius:3px;padding:.35em .8em;cursor:pointer}
+button.p{background:var(--acc);border-color:var(--acc);color:#fff}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+mark{background:var(--mark);color:inherit;padding:0 .12em;border-radius:2px}
+header{display:flex;align-items:center;gap:.8rem;padding:.6rem 1.2rem;border-bottom:3px double var(--ink);position:relative}
+h1{font:900 2rem 'Playfair Display',serif;margin:0 .4rem 0 0;letter-spacing:-.01em}
+#q{flex:1;min-width:0;border:1px solid var(--rule);background:var(--card);border-radius:3px;padding:.4em .7em}
+#app{flex:1;display:grid;grid-template-columns:1fr 2fr;min-height:0}
+aside{border-right:1px solid var(--rule);padding:1.2rem;overflow:auto}
+main{overflow:auto;padding:1.2rem 2rem 3rem;-webkit-overflow-scrolling:touch}
+aside select{width:100%;padding:.5em;background:var(--card);border:1px solid var(--rule);border-radius:3px;font-weight:600}
+aside h3{margin:1.2rem 0 .4rem;font-size:.95rem;color:var(--mute);font-weight:400}
+.src{display:flex;align-items:center;gap:.5rem;padding:.35rem 0;font-size:1.1rem;border-bottom:1px solid var(--rule)}
+.src input{width:1.2rem;height:1.2rem;accent-color:var(--acc)}
+.box{background:var(--card);border-left:4px solid var(--acc);padding:.8rem 1.1rem;margin:0 0 1.6rem}
+.box h2{margin:0 0 .3rem;font:700 1.1rem 'Playfair Display',serif}.box ul{margin:0;padding-left:1.1rem}
+article{border-top:1px solid var(--ink);padding:1rem 0 1.4rem}
+article h2{font:900 1.7rem/1.2 'Playfair Display',serif;margin:.2rem 0 .5rem}
+.lead{font-size:1.1rem}article ul{padding-left:1.2rem}
+.hero{width:100%;max-height:260px;object-fit:cover;border-radius:3px;margin-bottom:.6rem;background:var(--rule)}
+.t{margin-top:.8rem;padding-left:.8rem;border-left:4px solid}.t b{font-size:1.05rem}.t p{margin:.15rem 0}
+.t a{font-size:.9rem;color:var(--mute)}.tag{font:.8rem 'Source Serif 4';border:1px solid var(--rule);border-radius:9px;padding:0 .5em;margin-left:.4em;color:var(--mute)}
+.pop{position:absolute;top:100%;left:1rem;z-index:5;width:min(420px,92vw);max-height:70vh;overflow:auto;background:var(--card);border:1px solid var(--ink);border-radius:6px;box-shadow:0 8px 24px #0004}
+.pop div{padding:.7rem 1rem;border-bottom:1px solid var(--rule);cursor:pointer}.pop small{display:block;color:var(--mute);line-height:1.35}
+.modal{position:fixed;inset:0;background:var(--bg);z-index:9;overflow:auto;padding:1.2rem max(1.2rem,8vw)}
+.modal input{border:1px solid var(--rule);background:var(--card);border-radius:3px;padding:.35em .6em;max-width:100%}
+.row{display:flex;gap:.4rem;margin:.3rem 0;flex-wrap:wrap;align-items:center}.row input.u{flex:1;min-width:180px}
+.empty{color:var(--mute);margin-top:3rem;text-align:center}[hidden]{display:none!important}
+@media(max-width:899px){#app{grid-template-columns:1fr;grid-template-rows:auto 1fr}aside{border:0;border-bottom:1px solid var(--rule);padding:.7rem 1rem}
+.srcs{display:flex;flex-wrap:wrap;gap:.3rem .9rem}.src{border:0;font-size:1rem}aside h3{display:none}main{padding:1rem 1.1rem 3rem}h1{font-size:1.5rem}
+header{gap:.4rem;padding:.5rem .7rem}}
+</style></head><body>
+<div id="setup" class="modal" hidden><h1>Taglio</h1><p>Scrivi la password che hai impostato su Vercel (APP_KEY). La chiedo una volta sola e resta su questo dispositivo.</p>
+<div class="row"><input id="sk" class="u" type="password" placeholder="Password"></div>
+<div class="row"><button class="p" id="go">Entra</button></div></div>
+<header><button id="hist">Archivio</button><h1>Taglio</h1><input id="q" type="search" placeholder="Cerca un argomento nei giorni salvati"><button id="set">Impostazioni</button><div id="pop" class="pop" hidden></div></header>
+<div id="app"><aside><select id="cat"></select><h3>Testate</h3><div id="srcs" class="srcs"></div></aside><main id="main"></main></div>
+<div id="cfg" class="modal" hidden></div>
+<script>
+const $=id=>document.getElementById(id),S={api:'/api',key:localStorage.key||'',cfg:null,cat:null,day:null,data:null,sel:new Set()};
+['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,x=>x.preventDefault()));
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<mark>$1</mark>');
+const FONTS=['Playfair Display','Libre Baskerville','Merriweather','Old Standard TT','Roboto Slab','Lora'],COL=['#9a3a26','#1f4e79','#2f6b3f','#7a4e9c','#b07a12','#136f6f','#6b4226','#8a2b4f'];
+const sty=n=>{let h=0;for(const c of n)h=(h*31+c.charCodeAt(0))>>>0;return{f:FONTS[h%6],c:COL[(h>>3)%8]}};
+const call=(a,post)=>fetch(post?S.api:S.api+'?'+new URLSearchParams({...a,key:S.key}),post?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...a,key:S.key})}:{}).then(r=>r.json());
+const fmt=d=>new Date(d+'T12:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long'});
+const msg=t=>$('main').innerHTML='<p class="empty">'+t+'</p>';
+async function init(){
+ if(!S.key){$('setup').hidden=false;return}
+ msg('Carico…');
+ try{S.cfg=await call({action:'config'});if(S.cfg.error)throw S.cfg.error}catch(e){msg('Non riesco a collegarmi ('+esc(e)+'). Controlla indirizzo e chiave in Impostazioni.');return}
+ S.cat=S.cfg.categories[0]?.id;drawCats();loadDay()}
+function drawCats(){$('cat').innerHTML=S.cfg.categories.map(c=>`<option value="${c.id}"${c.id==S.cat?' selected':''}>${esc(c.name)}</option>`).join('');drawSrcs()}
+function drawSrcs(){const c=S.cfg.categories.find(x=>x.id==S.cat);if(!c)return;
+ const names=[...new Set(c.feeds.map(f=>f.name))];if(![...S.sel].some(n=>names.includes(n)))S.sel=new Set(names);
+ $('srcs').innerHTML=names.map(n=>{const s=sty(n);return`<label class="src"><input type="checkbox" value="${esc(n)}"${S.sel.has(n)?' checked':''}><span style="font-family:'${s.f}',serif;color:${s.c};font-weight:700">${esc(n)}</span></label>`}).join('')}
+async function loadDay(d){S.day=d||null;msg('Carico…');const r=await call({action:'digest',...(d?{date:d}:{})});S.data=r;render()}
+function render(){const D=S.data;if(!D||D.error)return msg(esc(D&&D.error||'Errore'));
+ if(D.vuoto)return msg('Nessun riepilogo per oggi. Apri Impostazioni e premi «Rigenera ora» (ci vogliono 1-2 minuti).');
+ const c=(D.categorie||[]).find(x=>x.id==S.cat);if(!c)return msg('Questa categoria non è nel riepilogo di questo giorno.');
+ let h=`<p style="color:var(--mute);margin:0 0 1rem">${fmt(D.data)}</p>`;
+ if(c.errore)h+=`<p class="box">Aggiornamento non riuscito: ${esc(c.errore)}</p>`;
+ if((c.in_30_secondi||[]).length)h+=`<div class="box"><h2>In 30 secondi</h2><ul>${c.in_30_secondi.map(x=>`<li>${md(x)}</li>`).join('')}</ul></div>`;
+ let n=0;(c.storie||[]).forEach(s=>{const ts=s.testate.filter(t=>S.sel.has(t.nome));if(!ts.length)return;n++;
+  const im=ts.find(t=>t.img);
+  h+=`<article>${im?`<img class="hero" loading="lazy" src="${esc(im.img)}" alt="" onerror="this.remove()">`:''}<h2>${esc(s.titolo)}</h2>
+  <p class="lead">${md(s.in_breve)}</p><ul>${s.punti.map(p=>`<li>${md(p)}</li>`).join('')}</ul>
+  ${ts.map(t=>{const y=sty(t.nome);return`<div class="t" style="border-color:${y.c}"><b style="font-family:'${y.f}',serif;color:${y.c}">${esc(t.nome)}</b>${t.fonte=='anteprima'?'<span class="tag">solo anteprima</span>':''}<p>${md(t.sunto)}</p><a href="${esc(t.url)}" target="_blank" rel="noopener">Leggi l'articolo</a></div>`}).join('')}</article>`});
+ if(!n)h+='<p class="empty">Nessuna notizia per le testate selezionate.</p>';$('main').innerHTML=h;$('main').scrollTop=0}
+$('cat').onchange=e=>{S.cat=e.target.value;drawSrcs();render()};
+$('srcs').onchange=e=>{e.target.checked?S.sel.add(e.target.value):S.sel.delete(e.target.value);render()};
+$('go').onclick=()=>{localStorage.key=S.key=$('sk').value.trim();$('setup').hidden=true;init()};
+$('hist').onclick=async()=>{const p=$('pop');if(!p.hidden){p.hidden=true;return}p.hidden=false;p.innerHTML='<div>Carico…</div>';
+ const r=await call({action:'days'});p.innerHTML=Array.isArray(r)&&r.length?r.map(x=>`<div data-d="${x.data}"><b>${fmt(x.data)}</b><small>${esc(x.tema)}</small></div>`).join(''):'<div>Ancora nessun giorno salvato.</div>'};
+$('pop').onclick=e=>{const d=e.target.closest('[data-d]');if(d){$('pop').hidden=true;loadDay(d.dataset.d)}};
+$('q').onkeydown=async e=>{if(e.key!='Enter')return;const v=e.target.value.trim();if(!v)return loadDay(S.day);e.target.blur();msg('Cerco…');
+ const r=await call({action:'search',q:v});if(!Array.isArray(r))return msg(esc(r.error));
+ $('main').innerHTML=r.length?`<p style="color:var(--mute)">${r.length} risultati per «${esc(v)}»</p>`+r.map(x=>`<article data-d="${x.data}" data-c="${x.cat}" style="cursor:pointer"><small>${fmt(x.data)} · ${esc(x.categoria)}</small><h2>${esc(x.titolo)}</h2><p>${md(x.in_breve)}</p></article>`).join(''):'<p class="empty">Nessun risultato nei giorni salvati.</p>'};
+$('main').onclick=e=>{const a=e.target.closest('article[data-c]');if(a){S.cat=a.dataset.c;drawCats();loadDay(a.dataset.d)}};
+// Impostazioni
+$('set').onclick=()=>{S.edit=JSON.parse(JSON.stringify(S.cfg||{categories:[]}));drawCfg();$('cfg').hidden=false};
+function drawCfg(){$('cfg').innerHTML=`<h1>Impostazioni</h1><div class="row"><button class="p" id="sv">Salva</button><button id="ts">Controlla fonti</button><button id="rf">Rigenera ora</button><button id="cl">Chiudi</button><button id="lo">Esci</button></div><p id="st" style="color:var(--mute)"></p>`+
+ S.edit.categories.map((c,i)=>`<section style="margin:1.4rem 0;border-top:1px solid var(--ink)"><div class="row"><input data-c="${i}" data-k="name" value="${esc(c.name)}" style="font-weight:700"><button data-x="${i}">Elimina divisione</button></div>`+
+ c.feeds.map((f,j)=>`<div class="row"><input data-c="${i}" data-f="${j}" data-k="name" value="${esc(f.name)}" style="width:10rem"><input class="u" data-c="${i}" data-f="${j}" data-k="url" value="${esc(f.url)}"><span data-s="${esc(f.url)}"></span><button data-x="${i}" data-y="${j}">Togli</button></div>`).join('')+
+ `<div class="row"><button data-a="${i}">Aggiungi testata</button></div></section>`).join('')+`<button id="nc">Nuova divisione</button>`}
+$('cfg').oninput=e=>{const t=e.target,c=S.edit.categories[t.dataset.c];if(!c)return;t.dataset.f!==undefined?c.feeds[t.dataset.f][t.dataset.k]=t.value:c.name=t.value};
+$('cfg').onclick=async e=>{const t=e.target,E=S.edit.categories;
+ if(t.dataset.y!==undefined){E[t.dataset.x].feeds.splice(t.dataset.y,1);drawCfg()}else if(t.dataset.x!==undefined){E.splice(t.dataset.x,1);drawCfg()}
+ else if(t.dataset.a!==undefined){E[t.dataset.a].feeds.push({name:'',url:''});drawCfg()}
+ else if(t.id=='nc'){E.push({id:'c'+Date.now(),name:'Nuova divisione',feeds:[]});drawCfg()}
+ else if(t.id=='cl')$('cfg').hidden=true;
+ else if(t.id=='lo'){localStorage.clear();location.reload()}
+ else if(t.id=='sv'){const r=await call({action:'save',config:S.edit},1);$('st').textContent=r.ok?'Salvato.':'Errore: '+(r.error||'');if(r.ok){S.cfg=S.edit;if(!S.cfg.categories.find(c=>c.id==S.cat))S.cat=S.cfg.categories[0]?.id;drawCats();render()}}
+ else if(t.id=='rf'){$('st').textContent='Aggiorno… può richiedere 1-2 minuti. Salva prima le modifiche.';const r=await call({action:'refresh'},1);$('st').textContent=r.ok?'Fatto.':'Errore: '+(r.error||'');if(r.ok){$('cfg').hidden=true;loadDay()}}
+ else if(t.id=='ts'){$('st').textContent='Controllo le fonti…';const urls=[...new Set(S.edit.categories.flatMap(c=>c.feeds.map(f=>f.url)).filter(Boolean))];
+  const r=await call({action:'test',urls},1);$('st').textContent='';if(!Array.isArray(r))return $('st').textContent=r.error;
+  r.forEach(x=>document.querySelectorAll('[data-s="'+CSS.escape(x.url)+'"]').forEach(s=>s.textContent={completo:'testo completo',anteprima:'solo anteprima',errore:'non funziona'}[x.stato]))}};
+init();
+</script></body></html>
