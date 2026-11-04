@@ -52,7 +52,7 @@ header{gap:.4rem;padding:.5rem .7rem}}
 <div id="app"><aside><select id="cat"></select><h3>Testate</h3><div id="srcs" class="srcs"></div></aside><main id="main"></main></div>
 <div id="cfg" class="modal" hidden></div>
 <script>
-const $=id=>document.getElementById(id),S={api:'/api',key:localStorage.key||'',cfg:null,cat:null,day:null,data:null,sel:new Set()};
+const $=id=>document.getElementById(id),S={api:'/api',key:localStorage.getItem('tk')||'',cfg:null,cat:null,day:null,data:null,sel:new Set()};
 ['gesturestart','gesturechange','gestureend'].forEach(e=>document.addEventListener(e,x=>x.preventDefault()));
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const md=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<mark>$1</mark>');
@@ -85,7 +85,7 @@ function render(){const D=S.data;if(!D||D.error)return msg(esc(D&&D.error||'Erro
  if(!n)h+='<p class="empty">Nessuna notizia per le testate selezionate.</p>';$('main').innerHTML=h;$('main').scrollTop=0}
 $('cat').onchange=e=>{S.cat=e.target.value;drawSrcs();render()};
 $('srcs').onchange=e=>{e.target.checked?S.sel.add(e.target.value):S.sel.delete(e.target.value);render()};
-$('go').onclick=()=>{localStorage.key=S.key=$('sk').value.trim();$('setup').hidden=true;init()};
+$('go').onclick=()=>{S.key=$('sk').value.trim();localStorage.setItem('tk',S.key);$('setup').hidden=true;init()};
 $('hist').onclick=async()=>{const p=$('pop');if(!p.hidden){p.hidden=true;return}p.hidden=false;p.innerHTML='<div>Carico…</div>';
  const r=await call({action:'days'});p.innerHTML=Array.isArray(r)&&r.length?r.map(x=>`<div data-d="${x.data}"><b>${fmt(x.data)}</b><small>${esc(x.tema)}</small></div>`).join(''):'<div>Ancora nessun giorno salvato.</div>'};
 $('pop').onclick=e=>{const d=e.target.closest('[data-d]');if(d){$('pop').hidden=true;loadDay(d.dataset.d)}};
